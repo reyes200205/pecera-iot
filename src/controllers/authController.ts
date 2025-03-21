@@ -42,7 +42,17 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({ msg: "User created successfully", newUser });
+    const token = jwt.sign(
+      {
+        userID: newUser.id,
+      },
+      secret,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    return res.status(200).json({ msg: "User created successfully", token });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
   }
