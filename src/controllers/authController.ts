@@ -42,7 +42,7 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
 
-    const token = jwt.sign(
+    const tokenRegister = jwt.sign(
       {
         userID: newUser.id,
       },
@@ -52,12 +52,11 @@ export const registerUser = async (req: Request, res: Response) => {
       }
     );
 
-    return res.status(200).json({ msg: "User created successfully", token });
+    return res.status(200).json({ msg: "User created successfully", tokenRegister });
   } catch (error) {
     return res.status(500).json({ msg: "Internal server error" });
   }
 };
-
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
@@ -76,7 +75,6 @@ export const loginUser = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(400).json({ msg: "User does not exist" });
     }
-    
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -108,6 +106,6 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(200).json({ msg: "User logged in successfully", token });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ msg: "error in login" , error});
+    return res.status(500).json({ msg: "error in login", error });
   }
 };
