@@ -13,8 +13,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// prisma/schema.prisma
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(45)
+  lastName    String   @db.VarChar(45)
+  email       String   @unique @db.VarChar(45)
+  password    String   @db.VarChar(120)
+  aquariums   Aquarium[]
+  actions     Action[]
+}
+
+model Aquarium {
+  id          Int       @id @default(autoincrement())
+  deviceId   Int
+  name       String    @db.VarChar(45)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  alerts      Alert[]
+  schedules   Schedule[]
+  sensors     Sensor[]
+  actions     Action[]
+}
+
+model Alert {
+  id          Int       @id @default(autoincrement())
+  message     String    @db.VarChar(45)
+  level       AlertLevel
+  aquariumId  Int
+  aquarium    Aquarium  @relation(fields: [aquariumId], references: [id])
+}
+
+model Schedule {
+  id            Int       @id @default(autoincrement())
+  actionType    String    @db.VarChar(45)
+  condition     String    @db.VarChar(45)
+  scheduledTime String    @db.VarChar(45)
+  aquariumId    Int
+  aquarium      Aquarium  @relation(fields: [aquariumId], references: [id])
+}
+
+model Sensor {
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(45)
+  type         String     @db.VarChar(45)
+  aquariumId   Int
+  aquarium     Aquarium   @relation(fields: [aquariumId], references: [id])
+  readings     Reading[]
+}
+
+model Reading {
+  id           Int       @id @default(autoincrement())
+  value        String    @db.VarChar(45)
+  sensorId     Int
+  sensor       Sensor    @relation(fields: [sensorId], references: [id])
+}
+
+model Action {
+  id           Int        @id @default(autoincrement())
+  actionType   String     @db.VarChar(45)
+  time         String     @db.VarChar(45)
+  userId       Int
+  aquariumId   Int
+  origin       OriginType
+  user         User       @relation(fields: [userId], references: [id])
+  aquarium     Aquarium   @relation(fields: [aquariumId], references: [id])
+}
+
+enum AlertLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum OriginType {
+  APP
+  SYSTEM
+  MANUAL
 }

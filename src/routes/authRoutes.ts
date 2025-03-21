@@ -1,5 +1,6 @@
 import express, { Request, Response, Router } from 'express';
-import { Login } from '../controllers/authController';
+import { loginUser } from '../controllers/authController';
+import { registerUser } from '../controllers/authController';
 
 
 const router = express.Router();
@@ -10,7 +11,11 @@ router.get('/test', (req: Request, res: Response) => {
 });
 
 router.post('/login', (req: Request, res: Response) => {
-  res.send(Login(req, res));
+  loginUser(req, res);
+});
+
+router.post('/register', (req: Request, res: Response) => {
+  registerUser(req, res);
 });
 
 export default router;
