@@ -30,6 +30,32 @@ export const getDataUser = async (req: Request, res: Response, userId: string) =
     }
 };
 
+export const getDataAquarium = async (req: Request, res: Response, userId: string) => {
+    try {
+        if (!userId) {
+            return res.status(401).send("Error: user not provided");
+        }
+
+        
+        const response = await prisma.aquarium.findFirst({
+            where: {
+                userId: isNaN(Number(userId)) ? undefined : Number(userId),  // Convierte a número
+            }
+        });
+
+        if (!response) {
+            return res.status(404).send("Aquarium not found for this user");
+        }
+
+        res.status(200).json(response.name);
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal server error");
+    }
+};
+    
+
 export const updateUser = async (req: Request, res: Response, userId: string) => {
     try {
         if (!userId) {
