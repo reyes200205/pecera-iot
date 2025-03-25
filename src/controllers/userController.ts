@@ -47,7 +47,9 @@ export const getDataAquarium = async (req: Request, res: Response, userId: strin
             return res.status(404).send("Aquarium not found for this user");
         }
 
-        res.status(200).json(response.name);
+        res.status(200).json({
+            name: response.name,
+        });
 
     } catch (error) {
         console.error("Error:", error);

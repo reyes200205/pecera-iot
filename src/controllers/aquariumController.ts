@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 export const insertAquarium = async (req: Request, res: Response) => {
     try {
-        console.log("Incoming request:", req.body);
 
         const { name, deviceID, userID } = req.body;
 
@@ -27,7 +26,6 @@ export const insertAquarium = async (req: Request, res: Response) => {
             },
         });
 
-        console.log("Existing aquarium:", existingAquarium);
 
         if (existingAquarium) {
             console.warn("Aquarium already exists with deviceId:", deviceID);

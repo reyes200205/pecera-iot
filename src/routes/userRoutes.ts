@@ -14,9 +14,7 @@ router.get("/data/aquarium/:id", (req: Request, res: Response)=> {
     getDataAquarium(req, res, req.params.id)
 });
 
-router.get("/aquarium/name/:id", (req: Request, res: Response) => {
 
-})
 
 router.patch("/update/:id", (req: Request, res: Response) => {
     updateUser(req, res, req.params.id);
