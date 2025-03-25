@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import sensorRoutes from "./routes/sensorRoutes";
 import aquariumRoutes from "./routes/aquariumRoutes";
+import userRoutes from "./routes/userRoutes"
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.use("/auth", authRoutes);
 app.use("/sensor", sensorRoutes); 
 
 app.use("/aquarium",aquariumRoutes);
+
+app.use("/user",userRoutes )
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

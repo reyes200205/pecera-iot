@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { getAguaData } from "../controllers/sensorController";
+import { getTemperaturaAguaData } from "../controllers/sensorController";
 import dotenv from "dotenv";
 import { verifyTokenAndDeviceID } from "../utils/tokenUtils";
 dotenv.config();
@@ -15,7 +15,7 @@ router.get("/test", (req: Request, res: Response) => {
   res.send("test");
 });
 
-router.get("/agua", (req: Request, res: Response) => {
+router.get("/temperatura", (req: Request, res: Response) => {
     const token = req.headers.authorization?.split(' ')[1]; 
 
     if (!token) {
@@ -24,7 +24,7 @@ router.get("/agua", (req: Request, res: Response) => {
     const deviceID = verifyTokenAndDeviceID(token, res);
     if (deviceID) {
         console.log("Device ID extraído:", deviceID);
-        getAguaData(deviceID, res);
+        getTemperaturaAguaData(deviceID, res);
     }
 });
 

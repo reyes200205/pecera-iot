@@ -18,3 +18,19 @@ export const verifyTokenAndDeviceID= (token: string, res: Response): string | nu
         return null;
     }
 };
+
+export const verifyTokenUserID = (token: string, res: Response): string | null => {
+    try {
+        const decoded = jwt.verify(token, jwtToken || "");
+
+        if (typeof decoded !== "string" && decoded.userID) {
+            return decoded.userID;
+        } else {
+            res.status(401).send("Error: Invalid token");
+            return null;
+        }
+    } catch (error) {
+        res.status(500).send("Error: al verificar el token");
+        return null;
+    }
+}
