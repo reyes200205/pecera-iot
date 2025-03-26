@@ -62,50 +62,61 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
+    console.log("Datos recibidos:", { email, password });
+
     if (!email || !password) {
+      console.log("Faltan campos por llenar.");
       return res.status(400).json({ msg: "Please fill all the fields" });
     }
 
     const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
     });
 
     if (!user) {
+      console.log("Usuario no encontrado:", email);
       return res.status(400).json({ msg: "User does not exist" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
+      console.log("Credenciales incorrectas para:", email);
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
     const pecera = await prisma.aquarium.findFirst({
-      where: {
-        userId: user.id,
-      },
+      where: { userId: user.id },
     });
 
-    const peceraID = pecera ? pecera.id : null;
-    const deviceID = pecera ? pecera.deviceId : "123";
+    if (!pecera) {
+      console.log(`No se encontró pecera para el usuario: ${user.id}`);
+      return res.status(404).json({ msg: "No aquarium found for this user" });
+    }
+
+    console.log("Pecera encontrada:", pecera);
 
     const token = jwt.sign(
       {
         userID: user.id,
         email: user.email,
-        deviceID,
+        deviceID: pecera.deviceId,  
       },
       secret,
-      {
-        expiresIn: "1h",
-      }
+      { expiresIn: "1h" }
     );
 
-    return res.status(200).json({ msg: "User logged in successfully", token });
+    console.log("Token generado:", token);
+
+    return res.status(200).json({
+      msg: "User logged in successfully",
+      token,
+      peceraID: pecera.id,    
+      deviceID: pecera.deviceId,  
+    });
+
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ msg: "error in login", error });
+    console.error("Error en el login:", error);
+    return res.status(500).json({ msg: "Error in login", error });
   }
 };
