@@ -15,18 +15,22 @@ router.get("/test", (req: Request, res: Response) => {
   res.send("test");
 });
 
-router.get("/temperatura", (req: Request, res: Response) => {
+router.get("/temperatura/:deviceID", (req: Request, res: Response) => {
     const token = req.headers.authorization?.split(' ')[1]; 
+    const requestDeviceID = req.params.deviceID; 
 
     if (!token) {
         return res.status(401).send("Error: Token not provided");
     }
-    const deviceID = verifyTokenAndDeviceID(token, res);
-    if (deviceID) {
-        console.log("Device ID extraído:", deviceID);
-        getTemperaturaAguaData(deviceID, res);
+
+    const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
+
+    if (hasAccess) {
+        console.log("Acceso autorizado para el Device ID:", requestDeviceID);  
+        getTemperaturaAguaData(requestDeviceID, res);  
     }
 });
+
 
 
 export default router;

@@ -49,3 +49,32 @@ export const insertAquarium = async (req: Request, res: Response) => {
         return res.status(500).json({ msg: "Internal server error", error: err });
     }
 };
+
+
+export const getAquariums = async (req: Request, res: Response, userID: string) => {
+    try {
+        if (!userID) {
+            return res.status(401).json({ msg: "User ID not provided" });
+        }
+
+        const response = await prisma.aquarium.findMany({
+            where: {
+                userId: parseInt(userID),
+            },
+        });
+
+        
+        if (response.length === 0) {
+            return res.status(404).json({ msg: "No aquariums found for this user" });
+        }
+
+        return res.status(200).json({
+            message: "Response is successful",
+            aquariums: response
+        });
+
+    } catch (error) {
+        console.error("Error fetching aquariums:", error);
+        return res.status(500).json({ msg: "Server error"});
+    }
+};

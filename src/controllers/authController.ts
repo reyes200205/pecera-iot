@@ -85,14 +85,15 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
-    const pecera = await prisma.aquarium.findFirst({
+    const pecera = await prisma.aquarium.findMany({
       where: { userId: user.id },
     });
 
-    if (!pecera) {
-      console.log(`No se encontró pecera para el usuario: ${user.id}`);
+    if (pecera.length === 0) {
       return res.status(404).json({ msg: "No aquarium found for this user" });
     }
+
+    const deviceIDs = pecera.map((aquarium) => aquarium.deviceId);
 
     console.log("Pecera encontrada:", pecera);
 
@@ -100,7 +101,7 @@ export const loginUser = async (req: Request, res: Response) => {
       {
         userID: user.id,
         email: user.email,
-        deviceID: pecera.deviceId,  
+        deviceIDs: deviceIDs,  
       },
       secret,
       { expiresIn: "1h" }
@@ -111,8 +112,7 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(200).json({
       msg: "User logged in successfully",
       token,
-      peceraID: pecera.id,    
-      deviceID: pecera.deviceId,  
+      deviceIDs
     });
 
   } catch (error) {

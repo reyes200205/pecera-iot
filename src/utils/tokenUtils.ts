@@ -3,27 +3,32 @@ import { Response } from "express";
 
 const jwtToken = process.env.JWT_SECRET;
 
-export const verifyTokenAndDeviceID = (token: string, res: Response): string | null => {
-    console.log("Token recibido:", token);  // 👀 Verifica el token recibido
+export const verifyTokenAndDeviceID = (
+    token: string, 
+    requestedDeviceID: string, 
+    res: Response
+): boolean => {
+
+    console.log("Token recibido:", token);  
+    console.log("DeviceID solicitado:", requestedDeviceID);  
 
     try {
-        const decoded = jwt.verify(token, jwtToken || "");
-        console.log("Token decodificado:", decoded); 
-
-        if (typeof decoded !== "string" && decoded.deviceID) {
-            console.log("DeviceID encontrado:", decoded.deviceID);  
-            return decoded.deviceID;
+        const decoded = jwt.verify(token, jwtToken || "") as { deviceIDs: number[] };
+        
+        if (decoded.deviceIDs.includes(parseInt(requestedDeviceID))) {
+            return true;  
         } else {
-            console.log("Token inválido o sin deviceID");
-            res.status(401).send("Error: Invalid token");
-            return null;
+            res.status(403).json({ msg: "Access denied. This aquarium does not belong to you." });
+            return false;
         }
+
     } catch (error) {
-        console.error("Error al verificar el token:", error);  // 👀 Muestra el error en caso de fallo
-        res.status(500).send("Error: al verificar el token");
-        return null;
+        console.error("Error al verificar el token:", error);
+        res.status(401).json({ msg: "Invalid token" }); 
+        return false;
     }
 };
+
 
 
 export const verifyTokenUserID = (token: string, res: Response): string | null => {
