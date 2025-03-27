@@ -33,10 +33,12 @@ export const verifyTokenAndDeviceID = (
 
 export const verifyTokenUserID = (token: string, res: Response): string | null => {
     try {
-        const decoded = jwt.verify(token, jwtToken || "");
+      
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
 
-        if (typeof decoded !== "string" && decoded.userID) {
-            return decoded.userID;
+        
+        if (typeof decoded === "object" && "userID" in decoded) {
+            return decoded.userID as string;
         } else {
             res.status(401).send("Error: Invalid token");
             return null;
@@ -45,4 +47,4 @@ export const verifyTokenUserID = (token: string, res: Response): string | null =
         res.status(500).send("Error: al verificar el token");
         return null;
     }
-}
+};
