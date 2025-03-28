@@ -78,3 +78,23 @@ export const getAquariums = async (req: Request, res: Response, userID: string) 
         return res.status(500).json({ msg: "Server error"});
     }
 };
+
+export const getAquariumByID = async (req: Request, res: Response, deviceID: string) => {
+    const aquariumID = req.params.id;
+    try {
+        const aquarium = await prisma.aquarium.findFirst({
+            where: {
+                deviceId: parseInt(deviceID),  
+            },
+        });
+
+        if (!aquarium) {
+            return res.status(404).json({ msg: "Aquarium not found" });
+        }
+
+        return res.status(200).json({ message: "Aquarium found", aquarium });
+    } catch (error) {
+        console.error("Error fetching aquarium:", error);
+        return res.status(500).json({ msg: "Server error" });
+    }
+}

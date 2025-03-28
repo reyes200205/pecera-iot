@@ -62,10 +62,7 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    console.log("Datos recibidos:", { email, password });
-
     if (!email || !password) {
-      console.log("Faltan campos por llenar.");
       return res.status(400).json({ msg: "Please fill all the fields" });
     }
 
@@ -74,14 +71,12 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      console.log("Usuario no encontrado:", email);
       return res.status(400).json({ msg: "User does not exist" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      console.log("Credenciales incorrectas para:", email);
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
@@ -92,11 +87,7 @@ export const loginUser = async (req: Request, res: Response) => {
     if (pecera.length === 0) {
       return res.status(404).json({ msg: "No aquarium found for this user" });
     }
-
     const deviceIDs = pecera.map((aquarium) => aquarium.deviceId);
-
-    console.log("Pecera encontrada:", pecera);
-
     const token = jwt.sign(
       {
         userID: user.id,
@@ -107,8 +98,6 @@ export const loginUser = async (req: Request, res: Response) => {
       { expiresIn: "1h" }
     );
 
-    console.log("Token generado:", token);
-
     return res.status(200).json({
       msg: "User logged in successfully",
       token,
@@ -116,7 +105,6 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error("Error en el login:", error);
     return res.status(500).json({ msg: "Error in login", error });
   }
 };

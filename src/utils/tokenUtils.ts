@@ -33,21 +33,15 @@ export const verifyTokenAndDeviceID = (
 
 export const verifyTokenUserID = (token: string, res: Response): string | null => {
     try {
-        console.log("Verificando token:", token);  // Log del token recibido
-
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "");
-        console.log("Token decodificado:", decoded);  // Log del token decodificado
 
         if (typeof decoded === "object" && "userID" in decoded) {
-            console.log("Token válido, userID:", decoded.userID);  // Log si el token es válido
             return decoded.userID as string;
         } else {
-            console.log("Token inválido o sin userID");
             res.status(401).send("Error: Invalid token");
             return null;
         }
     } catch (error) {
-        console.error("Error al verificar el token:", error);  // Log del error
         res.status(500).send("Error: al verificar el token");
         return null;
     }

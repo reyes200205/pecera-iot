@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { insertAquarium } from "../controllers/aquariumController";
 import { verifyTokenUserID } from "../utils/tokenUtils";
 import { getAquariums } from "../controllers/aquariumController";
+import { getAquariumByID } from "../controllers/aquariumController";
 
 const router = require("express").Router();
 
@@ -20,6 +21,10 @@ router.get("/all", (req: Request, res: Response) => {
   if (userID) {
     getAquariums(req, res, userID);
   }
+});
+
+router.get("/:deviceID", (req: Request, res: Response) => {
+  getAquariumByID(req, res, req.params.deviceID);
 });
 
 router.post("/insert", (req: Request, res: Response) => {
