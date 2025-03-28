@@ -14,13 +14,10 @@ if (!process.env.JWT_SECRET) {
 const secret = process.env.JWT_SECRET;
 
 export const registerUser = async (req: Request, res: Response) => {
-  console.log("📥 Incoming request:", req.body);  
-
   try {
     const { name, lastName, email, password } = req.body;
 
     if (!name || !lastName || !email || !password) {
-      console.log("❌ Missing fields:", { name, lastName, email, password });
       return res.status(400).json({ msg: "Please fill all the fields" });
     }
 
@@ -29,16 +26,10 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     if (existingUser) {
-      console.log("⚠️ User already exists:", existingUser);
       return res.status(400).json({ msg: "User already exists" });
     }
-
-
-    console.log("🔐 Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("✅ Password hashed successfully");
 
-    console.log("🛠️ Creating user in DB...");
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -48,15 +39,12 @@ export const registerUser = async (req: Request, res: Response) => {
       },
     });
 
-    console.log("✅ User created:", newUser);
 
     const tokenRegister = jwt.sign(
       { userID: newUser.id },
       secret,
       { expiresIn: "1h" }
     );
-
-    console.log("🔑 Token generated:", tokenRegister);
 
     return res.status(200).json({
       msg: "User created successfully",
@@ -65,12 +53,6 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
   } catch (error: any) {
-    console.error(" Error during registration:", error);
-
-    if (error.code) {
-      console.log(" Prisma error code:", error.code);
-    }
-    
     return res.status(500).json({
       msg: "Internal server error",
       error: error.message,

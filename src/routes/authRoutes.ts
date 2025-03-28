@@ -15,6 +15,14 @@ router.post('/login', (req: Request, res: Response) => {
 });
 
 router.post('/register', (req: Request, res: Response) => {
+  const token = req.headers.authorization;  
+
+  if (token) {
+    console.log(`Token recibido: ${token}`);
+  } else {
+    console.log('No se recibió token');
+  }
+
   registerUser(req, res);
 });
 
