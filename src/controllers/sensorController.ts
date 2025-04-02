@@ -39,3 +39,111 @@ export const getTemperaturaAguaData = async (deviceID: string,res: Response) => 
     res.status(500).send("Error: Something went wrong");
   }
 };
+
+
+export const getNivelAguaData = async (deviceID: string,res: Response) => {
+  try {
+    if (!deviceID) {
+      return res.status(400).send("Error: Device ID not provided");
+    }
+
+    const topic = `pecera-${deviceID}-nivelAgua`;
+    const baseUrl = `${urlMqtt}/api/v5/mqtt/retainer/message/${topic}`;
+
+    const response = await fetch(baseUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${credentials}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      const dataSensor = Buffer.from(data.payload, "base64");
+
+      res.json({
+        message: "Data fetched successfully",
+        data: dataSensor.toString(),
+      });
+    } else {
+      res.status(response.status).send("Error: Could not fetch data");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error: Something went wrong");
+  }
+};
+
+
+export const getFlujoAguaData = async (deviceID: string,res: Response) => {
+  try {
+    if (!deviceID) {
+      return res.status(400).send("Error: Device ID not provided");
+    }
+
+    const topic = `pecera-${deviceID}-flujoAgua`;
+    const baseUrl = `${urlMqtt}/api/v5/mqtt/retainer/message/${topic}`;
+
+    const response = await fetch(baseUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${credentials}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      const dataSensor = Buffer.from(data.payload, "base64");
+
+      res.json({
+        message: "Data fetched successfully",
+        data: dataSensor.toString(),
+      });
+    } else {
+      res.status(response.status).send("Error: Could not fetch data");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error: Something went wrong");
+  }
+};
+
+export const getLuzData = async (deviceID: string,res: Response) => {
+  try {
+    if (!deviceID) {
+      return res.status(400).send("Error: Device ID not provided");
+    }
+
+    const topic = `pecera-${deviceID}-luz`;
+    const baseUrl = `${urlMqtt}/api/v5/mqtt/retainer/message/${topic}`;
+
+    const response = await fetch(baseUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${credentials}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      const dataSensor = Buffer.from(data.payload, "base64");
+
+      res.json({
+        message: "Data fetched successfully",
+        data: dataSensor.toString(),
+      });
+    } else {
+      res.status(response.status).send("Error: Could not fetch data");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error: Something went wrong");
+  }
+};
+

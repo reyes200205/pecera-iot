@@ -73,12 +73,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   try {
-    console.log("📥 Login request received:", req.body);
 
     const { email, password } = req.body;
 
     if (!email || !password) {
-      console.log("❌ Missing fields");
       return res.status(400).json({ msg: "Please fill all the fields" });
     }
 
@@ -87,18 +85,12 @@ export const loginUser = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      console.log("❌ User not found with email:", email);
       return res.status(400).json({ msg: "User does not exist" });
     }
-
-    console.log("🔍 Verifying password...");
-    console.log("🔑 Provided password:", password);
-    console.log("🔒 Hashed password in DB:", user.password);
 
     const isPasswordCorrect = await bcrypt.compare(password.trim(), user.password);
 
     if (!isPasswordCorrect) {
-      console.log("❌ Invalid credentials (password mismatch)");
       return res.status(400).json({ msg: "Invalid credentials" });
     }
 
@@ -109,12 +101,10 @@ export const loginUser = async (req: Request, res: Response) => {
     console.log("🐠 Aquariums found:", pecera);
 
     if (pecera.length === 0) {
-      console.log("⚠️ No aquarium found for user:", user.id);
       return res.status(404).json({ msg: "No aquarium found for this user" });
     }
 
     const deviceIDs = pecera.map((aquarium) => aquarium.deviceId);
-    console.log("📡 Device IDs:", deviceIDs);
 
     const token = jwt.sign(
       {
@@ -123,10 +113,8 @@ export const loginUser = async (req: Request, res: Response) => {
         deviceIDs: deviceIDs,  
       },
       secret,
-      { expiresIn: "1h" }
+      { expiresIn: "24h" }
     );
-
-    console.log("🔒 Token generated:", token);
 
     return res.status(200).json({
       msg: "User logged in successfully",
