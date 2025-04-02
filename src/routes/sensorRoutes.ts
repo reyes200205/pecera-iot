@@ -4,6 +4,7 @@ import { getTemperaturaAguaData } from "../controllers/sensorController";
 import { getNivelAguaData } from "../controllers/sensorController";
 import { getFlujoAguaData } from "../controllers/sensorController";
 import { getLuzData } from "../controllers/sensorController";
+import { feedAquarium } from "../controllers/sensorController";
 import dotenv from "dotenv";
 import { verifyTokenAndDeviceID } from "../utils/tokenUtils";
 dotenv.config();
@@ -29,7 +30,6 @@ router.get("/temperatura/:deviceID", (req: Request, res: Response) => {
     const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
 
     if (hasAccess) {
-        console.log("Acceso autorizado para el Device ID:", requestDeviceID);  
         getTemperaturaAguaData(requestDeviceID, res);  
     }
 });
@@ -45,7 +45,6 @@ router.get("/Nivelagua/:deviceID", (req: Request, res: Response) => {
     const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
 
     if (hasAccess) {
-        console.log("Acceso autorizado para el Device ID:", requestDeviceID);  
         getNivelAguaData(requestDeviceID, res);
     }
 });
@@ -61,7 +60,6 @@ router.get("/flujoAgua/:deviceID", (req: Request, res: Response) => {
     const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
 
     if (hasAccess) {
-        console.log("Acceso autorizado para el Device ID:", requestDeviceID);  
         getFlujoAguaData(requestDeviceID, res);  
     }
 });
@@ -77,11 +75,13 @@ router.get("/luz/:deviceID", (req: Request, res: Response) => {
     const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
 
     if (hasAccess) {
-        console.log("Acceso autorizado para el Device ID:", requestDeviceID);  
         getLuzData(requestDeviceID, res);
     }
 });
 
+router.post("/feed/:deviceID", (req: Request, res: Response) => {
+    feedAquarium(req.params.deviceID, res);
+});
 
 
 

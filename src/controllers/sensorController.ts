@@ -147,3 +147,39 @@ export const getLuzData = async (deviceID: string,res: Response) => {
   }
 };
 
+
+export const feedAquarium = async (deviceID: string, res: Response) => {
+  try {
+    if (!deviceID) {
+      return res.status(400).send("Error: Device ID not provided");
+    }
+
+    const topic = `pecera-${deviceID}-feed`;
+    const baseUrl = `${urlMqtt}/api/v5/mqtt/publish`;
+
+    const payload = {
+      topic: topic,
+      payload: "feed",
+      qos: 1,
+      retain: false
+    };
+
+    const response = await fetch(baseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error en la solicitud: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    return res.status(200).json({ message: "Mensaje publicado con éxito", data });
+
+  } catch (error) {
+    console.error("Error publicando en MQTT:", error);
+    return res.status(500).send("Error publicando en MQTT");
+  }
+};
