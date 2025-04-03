@@ -55,6 +55,7 @@ CREATE TABLE `Sensor` (
 CREATE TABLE `Reading` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `value` VARCHAR(45) NOT NULL,
+    `timestamp` DATETIME(3) NOT NULL,
     `sensorId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
