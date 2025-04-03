@@ -65,6 +65,7 @@ model Sensor {
 model Reading {
   id           Int       @id @default(autoincrement())
   value        String    @db.VarChar(45)
+  timestamp   DateTime
   sensorId     Int
   sensor       Sensor    @relation(fields: [sensorId], references: [id])
 }

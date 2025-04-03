@@ -39,7 +39,7 @@ export const getDataAquarium = async (req: Request, res: Response, userId: strin
         
         const response = await prisma.aquarium.findFirst({
             where: {
-                userId: isNaN(Number(userId)) ? undefined : Number(userId),  // Convierte a número
+                userId: isNaN(Number(userId)) ? undefined : Number(userId),  
             }
         });
 
