@@ -11,15 +11,15 @@ import { getAverageTemperature,
 const router = Router();
 
 
-router.get("temperatura/:deviceID", (req, res) => {
+router.get("/temperatura/:deviceID", (req, res) => {
     getAverageTemperature(req, res);
 });
 
-router.get("temperatura/max/:deviceID", (req, res) => {
+router.get("/temperatura/max/:deviceID", (req, res) => {
     getMaxTemperature(req, res);
 });
 
-router.get("temperatura/min/:deviceID", (req, res) => {
+router.get("/temperatura/min/:deviceID", (req, res) => {
     getMinTemperature(req, res);
 });
 
