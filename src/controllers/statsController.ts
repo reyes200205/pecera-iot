@@ -353,7 +353,7 @@ export const offLight = async (req: Request, res: Response) => {
     }
 
     const topic = `pecera/${deviceID}/light`;
-    const payload = "Off";
+    const payload = "off";
 
     try {
         mqttClient.publish(topic, payload, {}, (err) => {
