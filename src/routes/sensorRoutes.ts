@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { getTemperaturaAguaData } from "../controllers/sensorController";
-import { getNivelAguaData } from "../controllers/sensorController";
+import { getNivelData } from "../controllers/sensorController";
 import { getFlujoAguaData } from "../controllers/sensorController";
 import { getLuzData } from "../controllers/sensorController";
+import { getTdsData } from "../controllers/sensorController";
+import { getTurbidezData } from "../controllers/sensorController";
 import { feedAquarium } from "../controllers/sensorController";
 import dotenv from "dotenv";
 import { verifyTokenAndDeviceID } from "../utils/tokenUtils";
@@ -34,7 +36,7 @@ router.get("/temperatura/:deviceID", (req: Request, res: Response) => {
     }
 });
 
-router.get("/Nivelagua/:deviceID", (req: Request, res: Response) => {
+router.get("/agua/:deviceID", (req: Request, res: Response) => {
     const token = req.headers.authorization?.split(' ')[1]; 
     const requestDeviceID = req.params.deviceID; 
 
@@ -45,7 +47,7 @@ router.get("/Nivelagua/:deviceID", (req: Request, res: Response) => {
     const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
 
     if (hasAccess) {
-        getNivelAguaData(requestDeviceID, res);
+        getNivelData(requestDeviceID, res);
     }
 });
 
@@ -61,6 +63,36 @@ router.get("/flujoAgua/:deviceID", (req: Request, res: Response) => {
 
     if (hasAccess) {
         getFlujoAguaData(requestDeviceID, res);  
+    }
+});
+
+router.get("/tds/:deviceID", (req: Request, res: Response) => {
+    const token = req.headers.authorization?.split(' ')[1]; 
+    const requestDeviceID = req.params.deviceID; 
+
+    if (!token) {
+        return res.status(401).send("Error: Token not provided");
+    }
+
+    const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
+
+    if (hasAccess) {
+        getTdsData(requestDeviceID, res);
+    }
+});
+
+router.get("/turbidez/:deviceID", (req: Request, res: Response) => {
+    const token = req.headers.authorization?.split(' ')[1]; 
+    const requestDeviceID = req.params.deviceID; 
+
+    if (!token) {
+        return res.status(401).send("Error: Token not provided");
+    }
+
+    const hasAccess = verifyTokenAndDeviceID(token, requestDeviceID, res); 
+
+    if (hasAccess) {
+        getTurbidezData(requestDeviceID, res);
     }
 });
 

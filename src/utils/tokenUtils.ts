@@ -8,10 +8,6 @@ export const verifyTokenAndDeviceID = (
     requestedDeviceID: string, 
     res: Response
 ): boolean => {
-
-    console.log("Token recibido:", token);  
-    console.log("DeviceID solicitado:", requestedDeviceID);  
-
     try {
         const decoded = jwt.verify(token, jwtToken || "") as { deviceIDs: number[] };
         
@@ -23,7 +19,6 @@ export const verifyTokenAndDeviceID = (
         }
 
     } catch (error) {
-        console.error("Error al verificar el token:", error);
         res.status(401).json({ msg: "Invalid token" }); 
         return false;
     }
