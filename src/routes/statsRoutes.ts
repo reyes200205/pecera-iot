@@ -23,7 +23,6 @@ router.get("/temperatura/min/:deviceID", (req, res) => {
     getMinTemperature(req, res);
 });
 
-
 router.get("/flujo/:deviceID", (req, res) => {
     getFlujoAguaData(req, res);
 });
