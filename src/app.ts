@@ -12,7 +12,7 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
-const client = mqtt.connect("mqtt://18.191.162.194");
+export const client = mqtt.connect("mqtt://18.191.162.194");
 
 const app = express();
 app.use(express.json());
