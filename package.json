@@ -19,7 +19,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mqtt": "^5.10.4"
+    "mqtt": "^5.10.4",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -27,6 +28,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/mqtt": "^0.0.34",
     "@types/node": "^22.13.10",
+    "@types/socket.io": "^3.0.1",
     "nodemon": "^3.1.9",
     "prisma": "^6.4.1",
     "ts-node": "^10.9.2",

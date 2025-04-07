@@ -7,13 +7,30 @@ import sensorRoutes from "./routes/sensorRoutes";
 import aquariumRoutes from "./routes/aquariumRoutes";
 import userRoutes from "./routes/userRoutes";
 import statsRoutes from "./routes/statsRoutes";
+import { emitAlertToUser } from "./services/socket";
 import alertRoutes from "./routes/alertRoutes";
 dotenv.config();
+
+import http from "http";
+import { Server } from "socket.io";
+import { setupSocket } from "./services/socket";
+
+const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+setupSocket(io);
+
 
 const prisma = new PrismaClient();
 export const client = mqtt.connect("mqtt://18.191.162.194");
 
-const app = express();
 app.use(express.json());
 
 const port = process.env.PORT || 3001;
@@ -54,6 +71,7 @@ async function saveMessage(deviceID: string, sensor: string, payload: string, ti
 
     const aquarium = await prisma.aquarium.findFirst({
       where: { deviceId: deviceIdInt },
+      include: { user: true }, 
     });
     if (!aquarium) return;
 
@@ -93,13 +111,25 @@ async function saveMessage(deviceID: string, sensor: string, payload: string, ti
           ? `${sensor} por debajo del límite mínimo (${limits.min})`
           : `${sensor} por encima del límite máximo (${limits.max})`;
 
-        await prisma.alert.create({
+        
+        const alert = await prisma.alert.create({
           data: {
             message,
             aquariumId: aquarium.id,
             sensorId: existingSensor.id,
           },
         });
+
+        
+        const alertaFinal = {
+          message,
+          sensor,
+          value: payload,
+          aquariumId: aquarium.id,
+        };
+
+        
+        emitAlertToUser(io, aquarium.user.id.toString(), alertaFinal);
       }
     }
 
@@ -107,6 +137,7 @@ async function saveMessage(deviceID: string, sensor: string, payload: string, ti
     console.log("Error saving message:", error);
   }
 }
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello Mundo!");
