@@ -25,10 +25,7 @@ export const getAlerts = async (req: Request, res: Response, deviceID: string) =
             }
         });
 
-        return res.status(200).json({
-            alerts: alerts,
-            message: "Alerts fetched successfully",
-        })
+        return res.status(200).json(alerts);
     }catch (err) {
         res.status(500).json({ msg: "Error getting alerts" });
     }
