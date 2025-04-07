@@ -25,14 +25,12 @@ app.use(express.json());
 
 const port = process.env.PORT || 3001;
 
-type SensorName = 'temperatura' | 'turbidez' | 'oxigeno' | 'ph' | 'nivelAgua';
+type SensorName = 'temperatura' | 'turbidez' | 'nivelAgua';
 
 const sensorLimit: Record<SensorName, { min: number; max?: number }> = {
   temperatura: { min: 10, max: 35 },
-  turbidez: { min: 1, max: 5 },
-  oxigeno: { min: 3, max: 8 },
-  ph: { min: 6.5, max: 8.5 },
-  nivelAgua: { min: 20 }
+  turbidez: { min: 1500, max: 3000 },
+  nivelAgua: { min: 80, max: 100 },
 };
 
 client.on("connect", () => {
