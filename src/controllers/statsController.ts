@@ -294,8 +294,8 @@ export const onFeed = async (req: Request, res: Response) => {
         return res.status(400).send("Error: Device ID not provided");
     }
 
-    const topic = `pecera/${deviceID}/feed`;
-    const payload = "ON";
+    const topic = `servo/control`;
+    const payload = "on";
 
     try {
         mqttClient.publish(topic, payload, {}, (err) => {
