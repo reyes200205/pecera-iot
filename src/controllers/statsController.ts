@@ -372,4 +372,57 @@ export const offLight = async (req: Request, res: Response) => {
     }
 };
 
+export const getNivelAguaData = async (req: Request, res: Response) => {
+    const deviceID = req.params.deviceID;
+
+    try {
+        const deviceIdInt = parseInt(deviceID);
+
+        if (isNaN(deviceIdInt)) {
+            return res.status(400).send("Error: Device ID not provided");
+        }
+
+        const aquarium = await prisma.aquarium.findFirst({
+            where: { deviceId: deviceIdInt },
+            include: {
+                sensors: {
+                    include: { readings: true }
+                }
+            },
+        });
+
+        if (!aquarium) {
+            return res.status(404).send("Aquarium not found");
+        }
+
+        const nivelSensor = aquarium.sensors.find(sensor => sensor.name === "nivelAgua");
+
+        if (!nivelSensor) {
+            return res.status(404).send("Sensor not found");
+        }
+
+        const readings = nivelSensor.readings;
+
+        if (readings.length === 0) {
+            return res.json({
+                deviceID: deviceIdInt,
+                averageTemperature: null,
+                readingsCount: 0,
+            });
+        }
+
+        const totalReadings = readings.reduce((acc, reading) => acc + parseFloat(reading.value), 0);
+        const averageReadings = parseFloat((totalReadings / readings.length).toFixed(2));
+
+        res.json({
+            deviceID: deviceIdInt,
+            averageTemperature: averageReadings,
+            readingsCount: readings.length,
+        });
+
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }
+};
+
 

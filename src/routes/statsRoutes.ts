@@ -6,6 +6,7 @@ import { getAverageTemperature,
     getCalidadAguaData,
     onFeed,
     offLight,
+    getNivelAguaData,
     onLight,
      } from "../controllers/statsController";
 const router = Router();
@@ -34,6 +35,10 @@ router.get("/turbidez/:deviceID", (req, res) => {
 router.post("/feed/:deviceID", (req, res) => {
     onFeed(req, res);
 })
+
+router.get("/nivel/:deviceID", (req, res) => {
+    getNivelAguaData(req, res);
+});
 
 router.post("/led/:deviceID", (req, res) => {
     onLight(req, res);
