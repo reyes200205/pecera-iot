@@ -225,6 +225,62 @@ export const getFlujoAguaData = async (req: Request, res: Response) => {
     }
 };
 
+export const getMInFlujoAguaData = async (req: Request, res: Response) => {
+    const deviceID = req.params.deviceID;
+
+    try {
+        const deviceIdInt = parseInt(deviceID);
+
+        if (isNaN(deviceIdInt)) {
+            return res.status(400).send("Error: Device ID not provided");
+        }
+
+        const aquarium = await prisma.aquarium.findFirst({
+            where: { deviceId: deviceIdInt },
+            include: {
+                sensors: {
+                    include: {
+                        readings: {
+                            where: {
+                                timestamp: {
+                                    gte: subHours(new Date(), 24)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!aquarium) {
+            return res.status(404).send("Aquarium not found");
+        }
+
+        const flujoAgua = aquarium.sensors.find(sensor => sensor.name === "flujoAgua");
+
+        if (!flujoAgua) {
+            return res.status(404).send("Sensor not found");
+        }
+
+        const validReadings = flujoAgua.readings.filter(reading => !isNaN(parseFloat(reading.value)));
+
+        if (validReadings.length === 0) {
+            return res.status(404).send("No valid temperature data found in the last 24 hours");
+        }
+
+        const sortedReadings = validReadings.sort((a, b) => parseFloat(a.value) - parseFloat(b.value));
+        const flujoAguaMin = parseFloat(sortedReadings[0].value);
+
+        res.json({
+            deviceID: deviceIdInt,
+            minFlow: flujoAguaMin,
+            timestamp: sortedReadings[0].timestamp,
+        });
+
+    } catch (error) {
+        res.status(500).send("Internal server error");
+    }  
+}
 
 export const getCalidadAguaData = async (req: Request, res: Response) => {
     const deviceID = req.params.deviceID;
@@ -431,3 +487,4 @@ export const getNivelAguaData = async (req: Request, res: Response) => {
         res.status(500).send("Internal server error");
     }
 };
+

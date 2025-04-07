@@ -6,6 +6,7 @@ import { getAverageTemperature,
     getCalidadAguaData,
     onFeed,
     offLight,
+    getMInFlujoAguaData,
     getNivelAguaData,
     onLight,
      } from "../controllers/statsController";
@@ -14,6 +15,10 @@ const router = Router();
 
 router.get("/temperatura/:deviceID", (req, res) => {
     getAverageTemperature(req, res);
+});
+
+router.get("/flujo/min/:deviceID", (req, res) => {
+    getMInFlujoAguaData(req, res);
 });
 
 router.get("/temperatura/max/:deviceID", (req, res) => {
