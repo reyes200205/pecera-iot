@@ -39,9 +39,11 @@ model Aquarium {
 model Alert {
   id          Int       @id @default(autoincrement())
   message     String    @db.VarChar(45)
-  level       AlertLevel
+  sensorId    Int
   aquariumId  Int
+  createdAt  DateTime @default(now())
   aquarium    Aquarium  @relation(fields: [aquariumId], references: [id])
+  sensor      Sensor    @relation(fields: [sensorId], references: [id])
 }
 
 model Schedule {
@@ -60,6 +62,7 @@ model Sensor {
   aquariumId   Int
   aquarium     Aquarium   @relation(fields: [aquariumId], references: [id])
   readings     Reading[]
+  alerts       Alert[]
 }
 
 model Reading {
