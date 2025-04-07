@@ -7,26 +7,15 @@ import sensorRoutes from "./routes/sensorRoutes";
 import aquariumRoutes from "./routes/aquariumRoutes";
 import userRoutes from "./routes/userRoutes";
 import statsRoutes from "./routes/statsRoutes";
-import { emitAlertToUser } from "./services/socket";
 import alertRoutes from "./routes/alertRoutes";
 dotenv.config();
 
 import http from "http";
 import { Server } from "socket.io";
-import { setupSocket } from "./services/socket";
 
 const app = express();
 
 const server = http.createServer(app);
-
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "*", 
-    methods: ["GET", "POST"]
-  }
-});
-
-setupSocket(io);
 
 
 const prisma = new PrismaClient();
@@ -129,8 +118,6 @@ async function saveMessage(deviceID: string, sensor: string, payload: string, ti
           aquariumId: aquarium.id,
         };
 
-        
-        emitAlertToUser(io, aquarium.user.id.toString(), alertaFinal);
       }
     }
 
