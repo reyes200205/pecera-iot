@@ -395,34 +395,39 @@ export const getNivelAguaData = async (req: Request, res: Response) => {
             return res.status(404).send("Aquarium not found");
         }
 
+        
         const nivelSensor = aquarium.sensors.find(sensor => sensor.name === "nivel");
 
         if (!nivelSensor) {
-            return res.status(404).send("Sensor not found");
+            return res.status(404).send("Sensor 'nivel' not found");
         }
 
-        const readings = nivelSensor.readings;
+        
+        const validReadings = nivelSensor.readings
+            .map(reading => parseFloat(reading.value))
+            .filter(value => !isNaN(value) && isFinite(value));
 
-        if (readings.length === 0) {
+        if (validReadings.length === 0) {
             return res.json({
                 deviceID: deviceIdInt,
-                averageTemperature: null,
+                averageWaterLevel: null,
                 readingsCount: 0,
             });
         }
 
-        const totalReadings = readings.reduce((acc, reading) => acc + parseFloat(reading.value), 0);
-        const averageReadings = parseFloat((totalReadings / readings.length).toFixed(2));
+        
+        const total = validReadings.reduce((sum, val) => sum + val, 0);
+        const average = parseFloat((total / validReadings.length).toFixed(2));
 
+        
         res.json({
             deviceID: deviceIdInt,
-            averageTemperature: averageReadings,
-            readingsCount: readings.length,
+            averageWaterLevel: average,
+            readingsCount: validReadings.length,
         });
 
     } catch (error) {
+        console.error(error);
         res.status(500).send("Internal server error");
     }
 };
-
-
