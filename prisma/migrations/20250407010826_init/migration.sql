@@ -24,8 +24,9 @@ CREATE TABLE `Aquarium` (
 CREATE TABLE `Alert` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `message` VARCHAR(45) NOT NULL,
-    `level` ENUM('LOW', 'MEDIUM', 'HIGH') NOT NULL,
+    `sensorId` INTEGER NOT NULL,
     `aquariumId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -78,6 +79,9 @@ ALTER TABLE `Aquarium` ADD CONSTRAINT `Aquarium_userId_fkey` FOREIGN KEY (`userI
 
 -- AddForeignKey
 ALTER TABLE `Alert` ADD CONSTRAINT `Alert_aquariumId_fkey` FOREIGN KEY (`aquariumId`) REFERENCES `Aquarium`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Alert` ADD CONSTRAINT `Alert_sensorId_fkey` FOREIGN KEY (`sensorId`) REFERENCES `Sensor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Schedule` ADD CONSTRAINT `Schedule_aquariumId_fkey` FOREIGN KEY (`aquariumId`) REFERENCES `Aquarium`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
