@@ -395,7 +395,7 @@ export const getNivelAguaData = async (req: Request, res: Response) => {
             return res.status(404).send("Aquarium not found");
         }
 
-        const nivelSensor = aquarium.sensors.find(sensor => sensor.name === "nivelAgua");
+        const nivelSensor = aquarium.sensors.find(sensor => sensor.name === "nivel");
 
         if (!nivelSensor) {
             return res.status(404).send("Sensor not found");
