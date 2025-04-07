@@ -19,10 +19,11 @@ const app = express();
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
+const io = require("socket.io")(server, {
   cors: {
-    origin: "*",
-  },
+    origin: "*", 
+    methods: ["GET", "POST"]
+  }
 });
 
 setupSocket(io);
